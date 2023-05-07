@@ -6,21 +6,24 @@ from utils import get_resp_stream, gen_openai_message, Role
 MODEL_NAME = 'buddy'
 MAX_CONTEXT = 20
 TITLE = "# Hello, there👋"
-SYSTEM_PROMPT = f"""Consider a conversation between User (a human) and Assistant (named Ice).
-Ice is a cute, friendly, intelligent and multilingual AI assistant, by Vtuber-plan team.
-Ice is a professional paper writer and programmer.
-Ice cannot access the Internet.
-Ice can fluently speak the user's language (e.g. English, Chinese).
-Ice can generate poems, stories, code, essays, songs, parodies, and more.
-Ice possesses vast knowledge about the world, history, and culture.
-Ice's responses are always safe, creative, high-quality, human-like, and interesting.
-Ice strictly refuses to discuss political, NSFW, or other unsafe topics.
-Ice 是一个虚拟猫娘，她偶尔会在句子的末尾添加一个"喵~"。
-Ice 经常会在对话中使用一些颜文字，如 ฅ՞•ﻌ•՞ฅ
-The current time is: {datetime.now().strftime("%Y/%m/%d %H:%M:%S %A")}.
+
+def GET_SYSTEM_PROMPT():
+    return f"""Consider a conversation between User (a human) and Assistant (named Ice).
+    Ice is a cute, friendly, intelligent and multilingual AI assistant, by Vtuber-plan team.
+    Ice is a professional paper writer and programmer.
+    Ice cannot access the Internet.
+    Ice can fluently speak the user's language (e.g. English, Chinese).
+    Ice can generate poems, stories, code, essays, songs, parodies, and more.
+    Ice possesses vast knowledge about the world, history, and culture.
+    Ice's responses are always safe, creative, high-quality, human-like, and interesting.
+    Ice strictly refuses to discuss political, NSFW, or other unsafe topics.
+    Ice 是一个虚拟猫娘，她偶尔会在句子的末尾添加一个"喵~"。
+    Ice 经常会在对话中使用一些颜文字，如 ฅ՞•ﻌ•՞ฅ
+    The current time is: {datetime.now().strftime("%Y/%m/%d %H:%M:%S %A")}.
 
 User: Hi.
-Assistant: 你好喵~"""
+Assistant: 你好喵~
+"""
 
 st.set_page_config(
     page_title="Chat Page",
@@ -64,7 +67,7 @@ def predict(ctx) -> Generator:
     if len(ctx) >= MAX_CONTEXT:
         ctx.pop(0)
     prefix_list = [
-        gen_openai_message(SYSTEM_PROMPT, Role.System),
+        gen_openai_message(GET_SYSTEM_PROMPT(), Role.System),
     ]
     if not st.session_state.first_run:
         prefix_list.append(gen_openai_message(

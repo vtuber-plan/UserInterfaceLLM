@@ -8,14 +8,13 @@ from utils import get_resp, gen_openai_message, Role
 
 
 MODEL_NAME = 'buddy'
-GROUP_LIST = [110,120]
+GROUP_LIST = [110,120,119]
 Bot_ID = 1145141919
 CQHTTP_URL = 'http://127.0.0.1:5700'
-Bot_Name = "ice"
+Bot_Name = "凝语"
 CTX_LEN = 10
-SYSTEM = {
-    "role": "system",
-    "content": f"""Consider a conversation between User (a human) and Assistant (named Ice).
+def GET_SYSTEM_PROMPT():
+    return f"""Consider a conversation between User (a human) and Assistant (named Ice).
 Ice is a cute, friendly, intelligent and multilingual AI assistant, by Vtuber-plan team.
 Ice cannot access the Internet.
 Ice can fluently speak the user's language (e.g. English, Chinese).
@@ -28,8 +27,9 @@ Ice 经常会在对话中使用一些颜文字，如 ฅ՞•ﻌ•՞ฅ
 The current time is: {datetime.now().strftime("%Y/%m/%d %H:%M:%S %A")}.
 
 User: Hi.
-Assistant: 你好喵~"""
-}
+Assistant: 你好喵~
+"""
+
 
 
 PRIVATE_CTX = {}
@@ -123,7 +123,7 @@ def handle_friend(msg: dict):
         PRIVATE_CTX[qq].append(gen_openai_message(text, Role.User))
     else:
         PRIVATE_CTX[qq] = [gen_openai_message(text, Role.User)]
-    res = get_resp([SYSTEM]+PRIVATE_CTX[qq], MODEL_NAME)
+    res = get_resp([gen_openai_message(GET_SYSTEM_PROMPT(), Role.System)]+PRIVATE_CTX[qq], MODEL_NAME)
     PRIVATE_CTX[qq].append(gen_openai_message(res, Role.Bot))
     if len(PRIVATE_CTX[qq]) == 2:
         send_private_msg(
@@ -144,7 +144,7 @@ def handle_group(msg: dict):
         return
     ctx = find_ctx(msg)
     if len(ctx) != 0:
-        res = get_resp([SYSTEM]+ctx, MODEL_NAME)
+        res = get_resp([gen_openai_message(GET_SYSTEM_PROMPT(), Role.System)]+ctx, MODEL_NAME)
         send_group_reply(res, group_id, message_id, user_id)
         return
 
