@@ -101,7 +101,7 @@ with st.form("form", True):
         if st.session_state.first_run:
             st.session_state.first_run = False
             text = '# '
-            for delta in predict(st.session_state.ctx+[gen_openai_message("总结以上对话内容，生成合适的标题，不要超过10个字，不要有多余的标点符号", Role.User)]):
+            for delta in predict(st.session_state.ctx+[gen_openai_message("总结以上对话内容,并生成一个合适的标题，不要超过10个字，请直接输出标题不要有任何多余的标点符号", Role.User)]):
                 text += delta
                 title_dom.title(text)
             st.session_state.title = text
@@ -109,6 +109,7 @@ with st.form("form", True):
 
     if btn_clear:
         ctx_dom.empty()
+        title_dom.title(TITLE)
         st.session_state.ctx = []
         st.session_state.first_run = True
         st.session_state.title = TITLE
