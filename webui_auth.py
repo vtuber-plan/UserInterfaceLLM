@@ -85,11 +85,10 @@ async def predict(ctx) -> Generator:
             f"请注意，本次对话的主题是{st.session_state.title}。", Role.User))
 
     async for data in get_resp_stream(prefix_list+ctx, MODEL_NAME, 0.7):
-        if data['choices'][0]['finish_reason'] == "stop":
-            break
-        if 'content' not in data['choices'][0]['delta']:
-            continue
-        yield data['choices'][0]['delta']['content']
+        if data['choices'][0]['finish_reason'] != "stop":
+            if 'content' not in data['choices'][0]['delta']:
+                continue
+            yield data['choices'][0]['delta']['content']
 
 async def main():
     authenticator = stauth.Authenticate({'usernames':USERS},cookie_name=MODEL_NAME,key=SIGNATURE_KEY, cookie_expiry_days=7)
