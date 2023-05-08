@@ -9,6 +9,7 @@ def get_resp_stream(ctx: List[dict], model:str, temperature:float=0.7, top_p:flo
     packet = {
         "model": model,
         "messages": ctx,
+        "max_tokens": 2048,
         "temperature": temperature,
         "top_p": top_p,
         "stream": True,
@@ -28,6 +29,7 @@ def get_resp(ctx: List[dict], model:str, temperature:float=0.7, top_p:float=0.9)
     packet = {
         "model": model,
         "messages": ctx,
+        "max_tokens": 2048,
         "temperature": temperature,
         "top_p": top_p,
     }
