@@ -7,7 +7,7 @@ import requests
 from utils import get_resp, gen_openai_message, Role
 
 
-MODEL_NAME = 'buddy'
+MODEL_NAME = 'ningyu'
 GROUP_LIST = [110,120,119]
 BOT_ID = 1145141919
 CQHTTP_URL = 'http://127.0.0.1:5700'

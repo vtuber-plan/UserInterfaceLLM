@@ -49,7 +49,22 @@ def gen_openai_message(content: str, role: Role) -> dict:
         "content": content
     }
 
+def pretty_print_json(json_string:str):
+    json_obj = json.loads(json_string)
+    print(json.dumps(json_obj, indent=4, sort_keys=True))
+
 if __name__ == '__main__':
-    mock_ctx = [{"role": "system", "content": "你是一个名为Ice的人工智能助手"},{"role": "user", "content": "你是谁？"}]
-    for data in get_resp_stream(mock_ctx, 'buddy'):
-        print(data)
+    import httpx
+    from httpx_sse import connect_sse
+    mock_ctx = [{"role": "system", "content": "你是一个名为Ice的人工智能助手"},{"role": "user", "content": "你好啊"}]
+    packet = {
+        "stream": True,
+        "model": 'buddy',
+        "messages": mock_ctx,
+        "temperature": 0.7,
+    }
+    with httpx.Client() as client:
+        with connect_sse(client, "POST", f'{BASE_URL}/v1/chat/completions',json=packet) as event_source:
+            for sse in event_source.iter_sse():
+                print(sse.event, sse.data, sse.id, sse.retry)
+

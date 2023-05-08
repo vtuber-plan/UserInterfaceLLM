@@ -4,7 +4,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 from utils import get_resp_stream, gen_openai_message, Role
 
-MODEL_NAME = 'buddy'
+MODEL_NAME = 'ningyu'
 BOT_NAME = "凝语"
 MAX_CONTEXT = 20
 TITLE = "# Hello, there👋"
@@ -128,8 +128,8 @@ elif st.session_state["authentication_status"]:
             if st.session_state.first_run:
                 st.session_state.first_run = False
                 text = '# '
-                for delta in predict(st.session_state.ctx+[gen_openai_message("总结以上对话内容,并生成一个合适的标题，不要超过10个字，请直接输出标题不要有任何多余的标点符号", Role.User)]):
-                    text += delta
+                for delta in predict(st.session_state.ctx+[gen_openai_message("请为以上对话生成一个合适的标题，不要超过10个字，请直接输出标题并用书名号“《》”包括", Role.User)]):
+                    text += delta.replace("\n", "").replace("《", "").replace("》", "")
                     title_dom.title(text)
                 st.session_state.title = text
                 st.balloons()
