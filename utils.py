@@ -5,11 +5,12 @@ from typing import Generator, List
 
 BASE_URL = 'http://127.0.0.1:8000'
 
-def get_resp_stream(ctx: List[dict], model:str, temperature:float=0.7) -> Generator:
+def get_resp_stream(ctx: List[dict], model:str, temperature:float=0.7, top_p:float=0.9) -> Generator:
     packet = {
         "model": model,
         "messages": ctx,
         "temperature": temperature,
+        "top_p": top_p,
         "stream": True,
     }
     res = requests.post(
@@ -23,11 +24,12 @@ def get_resp_stream(ctx: List[dict], model:str, temperature:float=0.7) -> Genera
         yield json.loads(data)
 
 
-def get_resp(ctx: List[dict], model:str, temperature:float=0.7) -> str:
+def get_resp(ctx: List[dict], model:str, temperature:float=0.7, top_p:float=0.9) -> str:
     packet = {
         "model": model,
         "messages": ctx,
         "temperature": temperature,
+        "top_p": top_p,
     }
     res = requests.post(
         url=f'{BASE_URL}/v1/chat/completions', json=packet)
@@ -54,8 +56,6 @@ def pretty_print_json(json_string:str):
     print(json.dumps(json_obj, indent=4, sort_keys=True))
 
 if __name__ == '__main__':
-    import httpx
-    from httpx_sse import connect_sse
     mock_ctx = [{"role": "system", "content": "你是一个名为Ice的人工智能助手"},{"role": "user", "content": "你好啊"}]
     packet = {
         "stream": True,
@@ -63,8 +63,4 @@ if __name__ == '__main__':
         "messages": mock_ctx,
         "temperature": 0.7,
     }
-    with httpx.Client() as client:
-        with connect_sse(client, "POST", f'{BASE_URL}/v1/chat/completions',json=packet) as event_source:
-            for sse in event_source.iter_sse():
-                print(sse.event, sse.data, sse.id, sse.retry)
 
