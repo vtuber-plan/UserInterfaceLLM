@@ -2,3 +2,4 @@ streamlit
 streamlit-authenticator
 fastapi
 uvicorn
+httpx
