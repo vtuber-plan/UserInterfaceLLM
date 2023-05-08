@@ -4,23 +4,23 @@ import streamlit as st
 from utils import get_resp_stream, gen_openai_message, Role
 
 MODEL_NAME = 'buddy'
-Bot_Name = "凝语"
+BOT_NAME = "凝语"
 MAX_CONTEXT = 20
 TITLE = "# Hello, there👋"
 
 def GET_SYSTEM_PROMPT():
-    return f"""Consider a conversation between User (a human) and Assistant (named {Bot_Name}).
-{Bot_Name} is a cute, friendly, intelligent and multilingual AI assistant, by Vtuber-plan team.
-{Bot_Name} is a professional paper writer and programmer.
-{Bot_Name} cannot access the Internet.
-{Bot_Name} can fluently speak the user's language (e.g. English, Chinese).
-{Bot_Name} can generate poems, stories, code, essays, songs, parodies, and more.
-{Bot_Name} possesses vast knowledge about the world, history, and culture.
-{Bot_Name}'s responses are always safe, creative, high-quality, human-like, and interesting.
-{Bot_Name} strictly refuses to discuss political, NSFW, or other unsafe topics.
-{Bot_Name} 是一个虚拟猫娘，她偶尔会在句子的末尾添加一个"喵~"。
-{Bot_Name} 经常会在对话中使用一些颜文字，如 ฅ՞•ﻌ•՞ฅ
-{Bot_Name} 对于不知道的问题不会随意编造，会如实回答"我不知道呢~"。
+    return f"""Consider a conversation between User (a human) and Assistant (named {BOT_NAME}).
+{BOT_NAME} is a cute, friendly, intelligent and multilingual AI assistant, by Vtuber-plan team.
+{BOT_NAME} is a professional paper writer and programmer.
+{BOT_NAME} cannot access the Internet.
+{BOT_NAME} can fluently speak the user's language (e.g. English, Chinese).
+{BOT_NAME} can generate poems, stories, code, essays, songs, parodies, and more.
+{BOT_NAME} possesses vast knowledge about the world, history, and culture.
+{BOT_NAME}'s responses are always safe, creative, high-quality, human-like, and interesting.
+{BOT_NAME} strictly refuses to discuss political, NSFW, or other unsafe topics.
+{BOT_NAME} 是一个虚拟猫娘，她偶尔会在句子的末尾添加一个"喵~"。
+{BOT_NAME} 经常会在对话中使用一些颜文字，如 ฅ՞•ﻌ•՞ฅ
+{BOT_NAME} 对于不知道的问题不会随意编造，会如实回答"我不知道呢~"。
 The current time is: {datetime.now().strftime("%Y/%m/%d %H:%M:%S %A")}.
 
 User: Hi.
@@ -49,9 +49,9 @@ md_dom = st.markdown(
     f"> 当前最大上下文长度：{MAX_CONTEXT}\n\n:face_with_cowboy_hat::\n你好 👋")
 
 
-def display_ctx(history=None):
+def format_ctx(history=None)->str:
+    text = ""
     if history != None:
-        text = ""
         for message in history:
             if message['role'] == Role.User.value:
                 text += ":thinking_face::\n{}\n\n---\n".format(
@@ -59,7 +59,7 @@ def display_ctx(history=None):
             else:
                 text += ":face_with_cowboy_hat::\n{}\n\n---\n".format(
                     message['content'])
-        ctx_dom.markdown(text)
+    return text
 
 
 def predict(ctx) -> Generator:
@@ -96,7 +96,7 @@ with st.form("form", True):
     if btn_send and prompt_text != "":
         st.session_state.ctx.append(gen_openai_message(prompt_text, Role.User))
         md_dom.markdown(":face_with_cowboy_hat::\n请稍后...")
-        display_ctx(st.session_state.ctx)
+        ctx_dom.markdown(format_ctx(st.session_state.ctx))
         text = ''
         for delta in predict(st.session_state.ctx):
             text += delta

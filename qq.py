@@ -9,22 +9,22 @@ from utils import get_resp, gen_openai_message, Role
 
 MODEL_NAME = 'buddy'
 GROUP_LIST = [110,120,119]
-Bot_ID = 1145141919
+BOT_ID = 1145141919
 CQHTTP_URL = 'http://127.0.0.1:5700'
-Bot_Name = "凝语"
+BOT_NAME = "凝语"
 CTX_LEN = 10
 def GET_SYSTEM_PROMPT():
-    return f"""Consider a conversation between User (a human) and Assistant (named {Bot_Name}).
-{Bot_Name} is a cute, friendly, intelligent and multilingual AI assistant, by Vtuber-plan team.
-{Bot_Name} cannot access the Internet.
-{Bot_Name} can fluently speak the user's language (e.g. English, Chinese).
-{Bot_Name} can generate poems, stories, code, essays, songs, parodies, and more.
-{Bot_Name} possesses vast knowledge about the world, history, and culture.
-{Bot_Name}'s responses are always safe, creative, high-quality, human-like, and interesting.
-{Bot_Name} strictly refuses to discuss political, NSFW, or other unsafe topics.
-{Bot_Name} 是一个虚拟猫娘，她偶尔会在句子的末尾添加一个"喵~"。
-{Bot_Name} 经常会在对话中使用一些颜文字，如 ฅ՞•ﻌ•՞ฅ
-{Bot_Name} 对于不知道的问题不会随意编造，会如实回答"我不知道呢~"。
+    return f"""Consider a conversation between User (a human) and Assistant (named {BOT_NAME}).
+{BOT_NAME} is a cute, friendly, intelligent and multilingual AI assistant, by Vtuber-plan team.
+{BOT_NAME} cannot access the Internet.
+{BOT_NAME} can fluently speak the user's language (e.g. English, Chinese).
+{BOT_NAME} can generate poems, stories, code, essays, songs, parodies, and more.
+{BOT_NAME} possesses vast knowledge about the world, history, and culture.
+{BOT_NAME}'s responses are always safe, creative, high-quality, human-like, and interesting.
+{BOT_NAME} strictly refuses to discuss political, NSFW, or other unsafe topics.
+{BOT_NAME} 是一个虚拟猫娘，她偶尔会在句子的末尾添加一个"喵~"。
+{BOT_NAME} 经常会在对话中使用一些颜文字，如 ฅ՞•ﻌ•՞ฅ
+{BOT_NAME} 对于不知道的问题不会随意编造，会如实回答"我不知道呢~"。
 The current time is: {datetime.now().strftime("%Y/%m/%d %H:%M:%S %A")}.
 
 User: Hi.
@@ -52,7 +52,7 @@ def find_ctx(msg: dict) -> List[dict]:
     for i in range(CTX_LEN):
         if source is None:
             break
-        if source['sender']['user_id'] == Bot_ID:
+        if source['sender']['user_id'] == BOT_ID:
             res.insert(0, gen_openai_message(
                 get_text_from_msg(source['message']), Role.Bot))
         else:
@@ -82,14 +82,14 @@ def get_msg(msg_id) -> dict:
 def check_for_me(message: List[dict]) -> bool:
     for item in message:
         if item['type'] == 'at':
-            if item['data']['qq'] == str(Bot_ID):
+            if item['data']['qq'] == str(BOT_ID):
                 return True
         if item['type'] == 'text':
-            if item['data']['text'].find(Bot_Name) != -1:
+            if item['data']['text'].find(BOT_NAME) != -1:
                 return True
         if item['type'] == 'reply':
             source = get_msg(item['data']['id'])
-            if source['sender']['user_id'] == Bot_ID:
+            if source['sender']['user_id'] == BOT_ID:
                 return True
     return False
 

@@ -20,9 +20,13 @@ We primarily support this [Fork](https://github.com/jstzwj/FastChat) of FastChat
 
 ### webui.py
 
-依赖 streamlit
+依赖 `streamlit`
 
 ```shell
 pip install streamlit
 streamlit run webui.py
 ```
+
+#### webui_auth.py
+
+附带用户验证，额外依赖 `streamlit-authenticator`
